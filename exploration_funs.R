@@ -12,9 +12,9 @@ plot_univar_metric <- function(v) {
 
 iplot_univar_metric <- function(v) {
       p1 <- plot_ly(x = v, type = "scatter")
-      p2 <- plot_ly(x = v, type = "box")
-      p3 <- plot_ly(x = v, type = "violin")
-      p4 <- plot_ly(x = v, type = "histogram")
+      p2 <- plot_ly(x = v, type = "histogram")
+      p3 <- plot_ly(y = v, type = "box")
+      p4 <- plot_ly(y = v, type = "violin")
       
       subplot(p1, p2, p3, p4, nrows = 2)
       
