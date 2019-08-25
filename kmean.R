@@ -3,6 +3,15 @@ library(corrplot)
 source("exploration_funs.R")
 
 
+#Online Resorurces
+"https://www.datanovia.com/en/blog/types-of-clustering-methods-overview-and-quick-start-r-code/"
+"https://uc-r.github.io/kmeans_clustering"
+"http://www.sthda.com/english/wiki/factoextra-r-package-easy-multivariate-data-analyses-and-elegant-visualization"
+"https://stats.stackexchange.com/questions/81481/why-does-k-means-clustering-algorithm-use-only-euclidean-distance-metric"
+#youtube
+"https://www.youtube.com/watch?v=mtkWR8sx0NA"
+"https://www.youtube.com/watch?v=P2KZisgs4A4&t=460s" # Read comments, he made some mistakes
+
 df <- iris
 
 # Simple k-means
