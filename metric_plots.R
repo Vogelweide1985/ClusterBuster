@@ -29,7 +29,7 @@ plot_ly(x = df$Sepal.Length, y = df$Sepal.Width, z= df$Petal.Length, color= df$S
 corrplot(cor(df[1:4]), type = "upper") # metric only
 
 
-
-
+pairs(df)
+plot_ly(x = dx y = y, z= t, color= c, type = 'scatter3d', mode = 'markers') 
 
 
