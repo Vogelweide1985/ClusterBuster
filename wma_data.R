@@ -9,7 +9,7 @@ source("exploration_funs.R")
 df<- readRDS("wma.Rds")
 df$media_fein <- ifelse(df$Medienuntergruppe == "KAUFZEITUNGEN", "KAUFZEITUNGEN", df$Mediengruppe )
 df$media_fein <- ifelse(df$Medienuntergruppe == "REGIONAL ABO ZEITUNGEN", "REGIONAL ABO ZEITUNGEN", df$media_fein )
-df$media_fein <- ifelse(df$Medienuntergruppe == "UEBERREGIONALE ZEITUNGEN", "UEBERREGIONALE ZEITUNGEN WOCHENZEITUNGEN", df$media_fein )
+df$media_fein <- ifelse(df$Medienuntergruppe == "UEBERREGIONALE ZEITUNGEN", "UEBERREGIONALE ZEITUNGEN", df$media_fein )
 df$media_fein <- ifelse(df$Medienuntergruppe == "SONNTAGSZEITUNGEN",  "Zeitung Rest", df$media_fein)
 df$media_fein <- ifelse(df$Medienuntergruppe == "ZEITUNGEN SONSTIGE",  "Zeitung Rest", df$media_fein)
 df$media_fein <- ifelse(df$Medienuntergruppe == "WOCHENZEITUNGEN",  "Zeitung Rest", df$media_fein)
@@ -82,25 +82,45 @@ p7
 
 
 #### Gruppieren nach Wirtschaftsbereich ####
-df_w <- df %>%
+
+tmp <- df %>%
   group_by(Wirtschaftsbereich) %>%
   summarise(summe = sum(Euro)) %>%
   arrange(desc(summe))
-df_w$Wirtschaftsbereich <- fct_inorder(df_w$Wirtschaftsbereich)
+tmp$Wirtschaftsbereich <- fct_inorder(tmp$Wirtschaftsbereich)
 
-p6 <- plot_ly(df_w, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar')
-
-
+p8 <- plot_ly(tmp, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar')
 
 
-#### Gruppieren nach Jahr und Wirtschaftsbereich ####
-df_j_w <- df %>%
-  group_by(Jahr, Wirtschaftsbereich) %>%
+tmp <- df %>%
+  filter(media_fein == "REGIONAL ABO ZEITUNGEN") %>%
+  group_by(Wirtschaftsbereich) %>%
   summarise(summe = sum(Euro)) %>%
   arrange(desc(summe))
-df_j_w$Wirtschaftsbereich <- fct_inorder(df_j_w$Wirtschaftsbereich)
+tmp$Wirtschaftsbereich <- fct_inorder(tmp$Wirtschaftsbereich)
+
+p9 <- plot_ly(tmp, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar')
 
 
-p <- plot_ly(df_j_w, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar') 
-p
 
+tmp <- df %>%
+  filter(media_fein == "UEBERREGIONALE ZEITUNGEN") %>%
+  group_by(Wirtschaftsbereich) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+tmp$Wirtschaftsbereich <- fct_inorder(tmp$Wirtschaftsbereich)
+
+p10 <- plot_ly(tmp, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar')
+
+
+
+tmp <- df %>%
+  filter(media_fein == "KAUFZEITUNGEN") %>%
+  group_by(Wirtschaftsbereich) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+tmp$Wirtschaftsbereich <- fct_inorder(tmp$Wirtschaftsbereich)
+
+p11 <- plot_ly(tmp, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar')
+p12 <- subplot(p8, p9, p10, p11, nrows = 2)
+p12
