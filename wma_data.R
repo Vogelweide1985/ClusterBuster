@@ -66,7 +66,6 @@ tmp2 <- tmp %>%
 tmp2 <- as.data.frame(tmp2)
 p5 <- plot_ly(tmp2, x = ~Jahr, y = ~summe, color = ~media_fein, type = "scatter", mode = "lines+markers")
 
-
 tmp3 <- tmp %>% 
   filter(Jahr == 2009) %>%
   group_by(media_fein) %>%
@@ -76,7 +75,6 @@ tmp2 <- left_join(tmp2, tmp3)
 tmp2$index <- tmp2$summe / tmp2$start_2019
 
 p6 <- plot_ly(tmp2, x = ~Jahr, y = ~index, color = ~media_fein, type = "scatter", mode = "lines+markers")
-
 p7 <- subplot(p5, p6, nrows = 2)
 p7
 
