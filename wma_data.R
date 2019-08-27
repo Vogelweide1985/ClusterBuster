@@ -2,19 +2,107 @@ library(plotly)
 library(corrplot)
 library(factoextra)
 library(dplyr)
+library(forcats)
 source("exploration_funs.R")
 
 
 df<- readRDS("wma.Rds")
+df$media_fein <- ifelse(df$Medienuntergruppe == "KAUFZEITUNGEN", "KAUFZEITUNGEN", df$Mediengruppe )
+df$media_fein <- ifelse(df$Medienuntergruppe == "REGIONAL ABO ZEITUNGEN", "REGIONAL ABO ZEITUNGEN", df$media_fein )
+df$media_fein <- ifelse(df$Medienuntergruppe == "UEBERREGIONALE ZEITUNGEN", "UEBERREGIONALE ZEITUNGEN WOCHENZEITUNGEN", df$media_fein )
+df$media_fein <- ifelse(df$Medienuntergruppe == "SONNTAGSZEITUNGEN",  "Zeitung Rest", df$media_fein)
+df$media_fein <- ifelse(df$Medienuntergruppe == "ZEITUNGEN SONSTIGE",  "Zeitung Rest", df$media_fein)
+df$media_fein <- ifelse(df$Medienuntergruppe == "WOCHENZEITUNGEN",  "Zeitung Rest", df$media_fein)
 
+#### Gruppieren nach Jahr  ####
+df_j <- df %>%
+  group_by(Jahr) %>%
+  summarise(jahr_summe = sum(Euro))
 
+p1 <- plot_ly(df_j, x = ~Jahr, y = ~jahr_summe, type = 'bar') 
+p1
 
-#### Gruppieren nach Jahr und Mediengruppe ####
+#### Gruppieren nach Jahr und media_fein ####
 df_j_m <- df %>%
-  group_by(Jahr, Mediengruppe) %>%
-  summarise(Summe = sum(Euro))
+  group_by(Jahr, media_fein) %>%
+  summarise(summe = sum(Euro))
+
+#bar Charts
+df_j_m <- left_join(df_j_m, df_j )
+df_j_m$prozent <- df_j_m$summe / df_j_m$jahr_summe *100
+
+p2 <- plot_ly(df_j_m, x = ~Jahr, y = ~summe, type = 'bar', color = ~media_fein ) %>%
+  layout(yaxis = list(title = 'Investitionen'), barmode = 'stack')
+p2
+
+p3 <- plot_ly(df_j_m, x = ~Jahr, y = ~prozent, type = 'bar', color = ~media_fein ) %>%
+  layout(yaxis = list(title = 'Investitionen'), barmode = 'stack')
+p3
+
+# Pie Charts
+tmp  <- filter(df_j_m, Jahr == 2009)
+tmp2 <- filter(df_j_m, Jahr == 2012)
+tmp3 <- filter(df_j_m, Jahr == 2015)
+tmp4 <- filter(df_j_m, Jahr == 2018)
+
+p4 <- plot_ly(labels = tmp$media_fein, values = tmp$prozent, type = "pie", 
+        domain = list(x = c(0, 0.4), y = c(0.6, 1)), showlegend = F) %>% 
+  add_trace(labels = tmp2$media_fein, values = tmp2$prozent, type = "pie", 
+            domain = list(x = c(0.6,1), y = c(0.6, 1)), showlegend = F) %>% 
+  add_trace(labels = tmp3$media_fein, values = tmp3$prozent, type = "pie", 
+            domain = list(x = c(0, 0.4), y = c(0, 0.4)), showlegend = F) %>% 
+  add_trace(labels = tmp4$media_fein, values = tmp4$prozent, type = "pie", 
+            domain = list(x = c(0.6, 1), y = c(0, 0.4)), showlegend = F) %>%
+  
+  layout(title = "Pie chart - subplot")
+p4
 
 
-p <- plot_ly(df_j_m, x = ~Jahr, y = ~Summe, type = 'bar', color = ~Mediengruppe) %>%
-  layout(yaxis = list(title = 'Count'), barmode = 'stack')
+# Line Plots
+tmp <- filter(df, Mediengruppe == "ZEITUNGEN")
+tmp2 <- tmp %>%
+  group_by(Jahr, media_fein) %>%
+  summarise(summe = sum(Euro))
+tmp2 <- as.data.frame(tmp2)
+p5 <- plot_ly(tmp2, x = ~Jahr, y = ~summe, color = ~media_fein, type = "scatter", mode = "lines+markers")
+
+
+tmp3 <- tmp %>% 
+  filter(Jahr == 2009) %>%
+  group_by(media_fein) %>%
+  summarise(start_2019 = sum(Euro))
+tmp3
+tmp2 <- left_join(tmp2, tmp3)  
+tmp2$index <- tmp2$summe / tmp2$start_2019
+
+p6 <- plot_ly(tmp2, x = ~Jahr, y = ~index, color = ~media_fein, type = "scatter", mode = "lines+markers")
+
+p7 <- subplot(p5, p6, nrows = 2)
+p7
+
+
+
+
+#### Gruppieren nach Wirtschaftsbereich ####
+df_w <- df %>%
+  group_by(Wirtschaftsbereich) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+df_w$Wirtschaftsbereich <- fct_inorder(df_w$Wirtschaftsbereich)
+
+p6 <- plot_ly(df_w, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar')
+
+
+
+
+#### Gruppieren nach Jahr und Wirtschaftsbereich ####
+df_j_w <- df %>%
+  group_by(Jahr, Wirtschaftsbereich) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+df_j_w$Wirtschaftsbereich <- fct_inorder(df_j_w$Wirtschaftsbereich)
+
+
+p <- plot_ly(df_j_w, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar') 
 p
+
