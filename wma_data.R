@@ -161,45 +161,67 @@ p17
 
 
 tmp <- df %>%
+  filter(Jahr == analyse_jahr) %>%
   group_by(Gruppe) %>%
   summarise(summe = sum(Euro)) %>%
   arrange(desc(summe))
 tmp$Gruppe <- fct_inorder(as.character(tmp$Gruppe))
-tmp <- tmp[1:30, ]
-p13 <- plot_ly(tmp, x = ~Gruppe, y = ~summe, type = 'bar')
+tmp1 <- tmp[1:20, ]
+p18 <- plot_ly(tmp1, x = ~Gruppe, y = ~summe, type = 'bar')
 
 
 tmp <- df %>%
+  filter(Jahr == analyse_jahr) %>%
   filter(media_fein == "REGIONAL ABO ZEITUNGEN") %>%
   group_by(Gruppe) %>%
   summarise(summe = sum(Euro)) %>%
   arrange(desc(summe))
 tmp$Gruppe <- fct_inorder(as.character(tmp$Gruppe))
-tmp <- tmp[1:30, ]
-p14 <- plot_ly(tmp, x = ~Gruppe, y = ~summe, type = 'bar')
+tmp2 <- tmp[1:30, ]
+p19 <- plot_ly(tmp2, x = ~Gruppe, y = ~summe, type = 'bar')
 
 tmp <- df %>%
-  filter(media_fein == "REGIONAL ABO ZEITUNGEN") %>%
+  filter(Jahr == analyse_jahr) %>%
+  filter(media_fein == "UEBERREGIONALE ZEITUNGEN") %>%
   group_by(Gruppe) %>%
   summarise(summe = sum(Euro)) %>%
   arrange(desc(summe))
 tmp$Gruppe <- fct_inorder(as.character(tmp$Gruppe))
-tmp <- tmp[1:30, ]
-p15 <- plot_ly(tmp, x = ~Gruppe, y = ~summe, type = 'bar')
+tmp3 <- tmp[1:30, ]
+p20 <- plot_ly(tmp3, x = ~Gruppe, y = ~summe, type = 'bar')
 
 tmp <- df %>%
-  filter(media_fein == "REGIONAL ABO ZEITUNGEN") %>%
+  filter(Jahr == analyse_jahr) %>%
+  filter(media_fein == "KAUFZEITUNGEN") %>%
   group_by(Gruppe) %>%
   summarise(summe = sum(Euro)) %>%
   arrange(desc(summe))
 tmp$Gruppe <- fct_inorder(as.character(tmp$Gruppe))
-tmp <- tmp[1:30, ]
-p16 <- plot_ly(tmp, x = ~Gruppe, y = ~summe, type = 'bar')
-p17 <- sublot(p13, p14, p15, p16)
+tmp4 <- tmp[1:30, ]
+p21 <- plot_ly(tmp4, x = ~Gruppe, y = ~summe, type = 'bar')
+p22 <- subplot(p18, p19, p20, p21, nrows = 2)
+p22
 
-top_x <- sum(tmp[1:15, "summe"])
-gesamt <- sum(tmp[,"summe"])
-anteil <- top_x /gesamt
 
-tmp <- df[1:15,]
+tmp1$summe_total <- tmp1$summe
+tmp2$summe_rtz <- tmp2$summe
+tmp3$summe_ureg <- tmp3$summe
+tmp4$summe_kauf <- tmp4$summe
+
+tmp5 <- left_join(tmp1, tmp2, by = "Gruppe")
+tmp5 <- left_join(tmp5, tmp3, by = "Gruppe")
+tmp5 <- left_join(tmp5, tmp4, by = "Gruppe")
+
+tmp5$tot_prz <- tmp5$summe_total / tmp5$summe_total *100
+tmp5$rtz_prz <- tmp5$summe_rtz / tmp5$summe_total*100
+tmp5$ureg_prz <- tmp5$summe_ureg / tmp5$summe_total*100
+tmp5$kauf_prz <- tmp5$summe_kauf / tmp5$summe_total*100
+
+
+p23 <- plot_ly(tmp5, x = ~Gruppe, y = ~tot_prz, type = 'bar')
+p24 <- plot_ly(tmp5, x = ~Gruppe, y = ~rtz_prz, type = 'bar')
+p25 <- plot_ly(tmp5, x = ~Gruppe, y = ~ureg_prz, type = 'bar')
+p26 <- plot_ly(tmp5, x = ~Gruppe, y = ~kauf_prz, type = 'bar')
+p27 <- subplot(p23, p24, p25, p26, nrows = 2)
+p27
 
