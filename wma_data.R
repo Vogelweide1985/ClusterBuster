@@ -2,6 +2,7 @@ library(plotly)
 library(corrplot)
 library(factoextra)
 library(dplyr)
+library(tidyr)
 library(forcats)
 source("exploration_funs.R")
 
@@ -82,45 +83,123 @@ p7
 
 
 #### Gruppieren nach Wirtschaftsbereich ####
-
+analyse_jahr <- 2018
 tmp <- df %>%
+  filter(Jahr == analyse_jahr) %>%
   group_by(Wirtschaftsbereich) %>%
   summarise(summe = sum(Euro)) %>%
   arrange(desc(summe))
 tmp$Wirtschaftsbereich <- fct_inorder(tmp$Wirtschaftsbereich)
-
+tmp1 <- tmp
 p8 <- plot_ly(tmp, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar')
 
 
 tmp <- df %>%
+  filter(Jahr == analyse_jahr) %>%
   filter(media_fein == "REGIONAL ABO ZEITUNGEN") %>%
   group_by(Wirtschaftsbereich) %>%
   summarise(summe = sum(Euro)) %>%
   arrange(desc(summe))
 tmp$Wirtschaftsbereich <- fct_inorder(tmp$Wirtschaftsbereich)
-
+tmp2 <- tmp
 p9 <- plot_ly(tmp, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar')
 
 
 
 tmp <- df %>%
+  filter(Jahr == analyse_jahr) %>%
   filter(media_fein == "UEBERREGIONALE ZEITUNGEN") %>%
   group_by(Wirtschaftsbereich) %>%
   summarise(summe = sum(Euro)) %>%
   arrange(desc(summe))
 tmp$Wirtschaftsbereich <- fct_inorder(tmp$Wirtschaftsbereich)
-
+tmp3 <- tmp
 p10 <- plot_ly(tmp, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar')
 
 
 
 tmp <- df %>%
+  filter(Jahr == analyse_jahr) %>%
   filter(media_fein == "KAUFZEITUNGEN") %>%
   group_by(Wirtschaftsbereich) %>%
   summarise(summe = sum(Euro)) %>%
   arrange(desc(summe))
 tmp$Wirtschaftsbereich <- fct_inorder(tmp$Wirtschaftsbereich)
-
+tmp4 <- tmp
 p11 <- plot_ly(tmp, x = ~Wirtschaftsbereich, y = ~summe, type = 'bar')
 p12 <- subplot(p8, p9, p10, p11, nrows = 2)
 p12
+
+tmp1$summe_total <- tmp1$summe
+tmp2$summe_rtz <- tmp2$summe
+tmp3$summe_ureg <- tmp3$summe
+tmp4$summe_kauf <- tmp4$summe
+
+tmp5 <- left_join(tmp1, tmp2, by = "Wirtschaftsbereich")
+tmp5 <- left_join(tmp5, tmp3, by = "Wirtschaftsbereich")
+tmp5 <- left_join(tmp5, tmp4, by = "Wirtschaftsbereich")
+
+tmp5$tot_prz <- tmp5$summe_total / tmp5$summe_total *100
+tmp5$rtz_prz <- tmp5$summe_rtz / tmp5$summe_total*100
+tmp5$ureg_prz <- tmp5$summe_ureg / tmp5$summe_total*100
+tmp5$kauf_prz <- tmp5$summe_kauf / tmp5$summe_total*100
+
+tmp5 <- filter(tmp5, Wirtschaftsbereich != "INDUSTR.VERBRAUCHS-GUETER")
+tmp5$Wirtschaftsbereich <- fct_inorder(tmp$Wirtschaftsbereich)
+
+
+
+
+p13 <- plot_ly(tmp5, x = ~Wirtschaftsbereich, y = ~tot_prz, type = 'bar')
+p14 <- plot_ly(tmp5, x = ~Wirtschaftsbereich, y = ~rtz_prz, type = 'bar')
+p15 <- plot_ly(tmp5, x = ~Wirtschaftsbereich, y = ~ureg_prz, type = 'bar')
+p16 <- plot_ly(tmp5, x = ~Wirtschaftsbereich, y = ~kauf_prz, type = 'bar')
+p17 <- subplot(p13, p14, p15, p16, nrows = 2)
+p17
+
+#### Gruppieren nach TOP-X Branchen ####
+
+
+tmp <- df %>%
+  group_by(Gruppe) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+tmp$Gruppe <- fct_inorder(as.character(tmp$Gruppe))
+tmp <- tmp[1:30, ]
+p13 <- plot_ly(tmp, x = ~Gruppe, y = ~summe, type = 'bar')
+
+
+tmp <- df %>%
+  filter(media_fein == "REGIONAL ABO ZEITUNGEN") %>%
+  group_by(Gruppe) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+tmp$Gruppe <- fct_inorder(as.character(tmp$Gruppe))
+tmp <- tmp[1:30, ]
+p14 <- plot_ly(tmp, x = ~Gruppe, y = ~summe, type = 'bar')
+
+tmp <- df %>%
+  filter(media_fein == "REGIONAL ABO ZEITUNGEN") %>%
+  group_by(Gruppe) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+tmp$Gruppe <- fct_inorder(as.character(tmp$Gruppe))
+tmp <- tmp[1:30, ]
+p15 <- plot_ly(tmp, x = ~Gruppe, y = ~summe, type = 'bar')
+
+tmp <- df %>%
+  filter(media_fein == "REGIONAL ABO ZEITUNGEN") %>%
+  group_by(Gruppe) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+tmp$Gruppe <- fct_inorder(as.character(tmp$Gruppe))
+tmp <- tmp[1:30, ]
+p16 <- plot_ly(tmp, x = ~Gruppe, y = ~summe, type = 'bar')
+p17 <- sublot(p13, p14, p15, p16)
+
+top_x <- sum(tmp[1:15, "summe"])
+gesamt <- sum(tmp[,"summe"])
+anteil <- top_x /gesamt
+
+tmp <- df[1:15,]
+
