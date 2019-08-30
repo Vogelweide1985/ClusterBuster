@@ -49,9 +49,9 @@ erg_total <- cbind(df_total, m1 = m1$cluster, m2 =m2$cluster, m3 =m3$cluster)
 erg_total <- left_join(erg_total, df[, c("Marke", "Gruppe", "Wirtschaftsbereich")])
 
 #Darstellung nach Wirtschaftsbereich
-t <- table(erg_total$m1, erg_total$Wirtschaftsbereich)
-prop.table(t, 2)
-t <- table(erg_total$m2, erg_total$Wirtschaftsbereich)
-prop.table(t, 2)
-t <- table(erg_total$m3, erg_total$Wirtschaftsbereich)
-prop.table(t, 2)
+t <- table( erg_total$Wirtschaftsbereich, erg_total$m1)
+prop.table(t, 1)*100
+t <- table( erg_total$Wirtschaftsbereich, erg_total$m2)
+prop.table(t, 1)*100
+t <- table( erg_total$Wirtschaftsbereich, erg_total$m3)
+prop.table(t, 1)*100
