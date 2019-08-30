@@ -158,7 +158,7 @@ p17 <- subplot(p13, p14, p15, p16, nrows = 2)
 p17
 
 #### Gruppieren nach TOP-X Branchen ####
-
+analyse_jahr = 2018
 
 tmp <- df %>%
   filter(Jahr == analyse_jahr) %>%
@@ -225,3 +225,91 @@ p26 <- plot_ly(tmp5, x = ~Gruppe, y = ~kauf_prz, type = 'bar')
 p27 <- subplot(p23, p24, p25, p26, nrows = 2)
 p27
 
+#### Kundenanalyse ####
+
+# Gesamt
+analyse_jahr <- 2009
+top_anteil <- 100
+
+tmp <- df %>%
+  filter(Jahr == analyse_jahr) %>%
+  filter(Marke != "KEINE ANGABE") %>%
+  group_by(Marke) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+tmp$Marke <- fct_inorder(as.character(tmp$Marke))
+
+p28 <- plot_ly(tmp, x = ~Marke, y = ~summe, type = 'bar')
+p28
+
+
+# TZ Kunden
+
+tmp1 <- df %>%
+  filter(Jahr == analyse_jahr) %>%
+  filter(Marke != "KEINE ANGABE") %>%
+  filter(media_fein == "REGIONAL ABO ZEITUNGEN") %>%
+  group_by(Marke) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+tmp1$Marke <- fct_inorder(as.character(tmp1$Marke))
+tmp1 <- tmp1[1:top_anteil, ]
+p29 <- plot_ly(tmp1, x = ~Marke, y = ~summe, type = 'bar')
+p29
+
+tmp$total <- tmp$summe
+tmp$summe <- NULL
+tmp2 <- left_join(tmp1, tmp , by = "Marke")
+tmp2$soa <- tmp2$summe / tmp2$total*100
+tmp2$Marke <- fct_inorder(as.character(tmp1$Marke))
+p30 <- plot_ly(tmp2, x = ~Marke, y = ~soa, type = 'bar')
+p31 <- subplot(p29, p30, nrows = 2)
+p31
+
+
+
+
+# Gesamt
+analyse_jahr <- 2018
+top_anteil <- 100
+
+tmp <- df %>%
+  filter(Jahr == analyse_jahr) %>%
+  filter(Marke != "KEINE ANGABE") %>%
+  group_by(Marke) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+tmp$Marke <- fct_inorder(as.character(tmp$Marke))
+
+p32 <- plot_ly(tmp, x = ~Marke, y = ~summe, type = 'bar')
+p32
+
+
+# TZ Kunden
+
+tmp1 <- df %>%
+  filter(Jahr == analyse_jahr) %>%
+  filter(Marke != "KEINE ANGABE") %>%
+  filter(media_fein == "REGIONAL ABO ZEITUNGEN") %>%
+  group_by(Marke) %>%
+  summarise(summe = sum(Euro)) %>%
+  arrange(desc(summe))
+tmp1$Marke <- fct_inorder(as.character(tmp1$Marke))
+tmp1 <- tmp1[1:top_anteil, ]
+p33 <- plot_ly(tmp1, x = ~Marke, y = ~summe, type = 'bar')
+p33
+
+tmp$total <- tmp$summe
+tmp$summe <- NULL
+tmp2 <- left_join(tmp1, tmp , by = "Marke")
+tmp2$soa <- tmp2$summe / tmp2$total*100
+tmp2$Marke <- fct_inorder(as.character(tmp1$Marke))
+p34 <- plot_ly(tmp2, x = ~Marke, y = ~soa, type = 'bar')
+p35 <- subplot(p33, p34, nrows = 2)
+p35
+
+
+# Zeitvergleichs Kundenplot:
+
+p36 <- subplot(p29, p30, p33, p34, nrows =2 )
+p36
