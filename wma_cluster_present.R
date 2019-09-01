@@ -47,7 +47,23 @@ m_total <- as.matrix(df_total[,2:8]) # Rechnen mit totals Spends
 m_prz <- as.matrix(df_total[,10:16]) # Rechnen mit Prozenten
 set.seed(123)
 
+# Visualisierungen
+colnames(df_total[,2:8])
+iplot_metric(df_total[,2])
+iplot_metric(df_total[,3])
+iplot_metric(df_total[,4])
+iplot_metric(df_total[,5])
+iplot_metric(df_total[,6])
+iplot_metric(df_total[,7])
+iplot_metric(df_total[,8])
 
+iplot_metric(df_total[,10])
+iplot_metric(df_total[,11])
+iplot_metric(df_total[,12])
+iplot_metric(df_total[,13])
+iplot_metric(df_total[,14])
+iplot_metric(df_total[,15])
+iplot_metric(df_total[,16])
 
 
 
