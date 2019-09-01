@@ -23,20 +23,35 @@ analyse_jahr <- 2018
 df2 <- df %>%
   filter(Jahr == analyse_jahr) %>%
   filter(Marke != "KEINE ANGABE") %>%
-  group_by(Marke, media_fein) %>%
+  group_by(Marke, Mediengruppe) %>%
   summarise(summe = sum(Euro)) %>%
   arrange(desc(summe))
 
 
 # kmeans über Total summen -> kann ncihts rauskommen
-df_total <- spread(df2, media_fein, summe )
+df_total <- spread(df2, Mediengruppe, summe )
 df_total[is.na(df_total)] <- 0
 df_total <- as.data.frame(df_total)
-m_total <- as.matrix(df_total[,2:ncol(df_total)])
+df_total$total <- rowSums(df_total[, -1])
+df_total[, "DESKTOP_prz"] <- df_total[, "DESKTOP"] / df_total$total
+df_total[, "FERNSEHEN_prz"] <- df_total[, "FERNSEHEN"] / df_total$total
+df_total[, "PLAKAT_prz"] <- df_total[, "PLAKAT"] / df_total$total
+df_total[, "PUBLIKUMSZEITSCHRIFTEN_prz"] <- df_total[, "PUBLIKUMSZEITSCHRIFTEN"] / df_total$total
+df_total[, "RADIO_prz"] <- df_total[, "RADIO"] / df_total$total
+df_total[, "WERBESENDUNGEN_prz"] <- df_total[, "WERBESENDUNGEN"] / df_total$total
+df_total[, "ZEITUNGEN_prz"] <- df_total[, "ZEITUNGEN"] / df_total$total
 
+
+
+m_total <- as.matrix(df_total[,2:8]) # Rechnen mit totals Spends
+m_prz <- as.matrix(df_total[,10:16]) # Rechnen mit Prozenten
 set.seed(123)
 
-kmeans(m_total, centers = 3)
+
+
+
+
+## Modell mit total Spends
 fviz_nbclust(m_total, kmeans, method = "wss")
 fviz_nbclust(m_total, kmeans, method = "silhouette")
 fviz_nbclust(m_total, kmeans, method = "gap_stat")
