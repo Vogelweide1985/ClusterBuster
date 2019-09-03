@@ -49,22 +49,34 @@ set.seed(123)
 
 # Visualisierungen
 colnames(df_total[,2:8])
-iplot_metric(df_total[,2])
-iplot_metric(df_total[,3])
-iplot_metric(df_total[,4])
-iplot_metric(df_total[,5])
-iplot_metric(df_total[,6])
-iplot_metric(df_total[,7])
-iplot_metric(df_total[,8])
+iplot_metric(df_total[,2]) # DESKTOP
+iplot_metric(df_total[,3]) # FERNSEHEN
+iplot_metric(df_total[,4]) # PLAKAT
+iplot_metric(df_total[,5]) # PUBLIKUMSZEITSCHRIFTEN
+iplot_metric(df_total[,6]) # RADIO_prz
+iplot_metric(df_total[,7]) # WERBESENDUNGEN
+iplot_metric(df_total[,8]) # ZEITUNGEN
 
-iplot_metric(df_total[,10])
-iplot_metric(df_total[,11])
-iplot_metric(df_total[,12])
-iplot_metric(df_total[,13])
-iplot_metric(df_total[,14])
-iplot_metric(df_total[,15])
-iplot_metric(df_total[,16])
+iplot_metric(df_total[,10]) # DESKTOP_prz
+iplot_metric(df_total[,11]) # FERNSEHEN_prz
+iplot_metric(df_total[,12]) # PLAKAT_prz
+iplot_metric(df_total[,13]) # PUBLIKUMSZEITSCHRIFTEN_prz
+iplot_metric(df_total[,14]) # RADIO_prz
+iplot_metric(df_total[,15]) # WERBESENDUNGEN_prz
+iplot_metric(df_total[,16]) # ZEITUNGEN_prz
 
+
+iplot_metric_metric(df_total[,2], df_total[,3])
+iplot_metric_metric(df_total[,3], df_total[,8])
+iplot_metric_metric(df_total[,8], df_total[,7])
+iplot_metric_metric(df_total[,8], df_total[,6])
+
+
+
+iplot_metric_metric(df_total[,10], df_total[,11])
+iplot_metric_metric(df_total[,11], df_total[,16])
+iplot_metric_metric(df_total[,16], df_total[,15])
+iplot_metric_metric(df_total[,16], df_total[,14])
 
 
 ## Modell mit total Spends
