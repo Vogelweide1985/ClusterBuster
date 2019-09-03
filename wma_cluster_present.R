@@ -78,8 +78,14 @@ iplot_metric_metric(df_total[,11], df_total[,16])
 iplot_metric_metric(df_total[,16], df_total[,15])
 iplot_metric_metric(df_total[,16], df_total[,14])
 
+iplot_metric_mult()
+pairs(df_total[, 2:8])
+pairs(df_total[, 10:16])
+corrplot(cor(df_total[, 2:8]), type = 'upper')
+corrplot(cor(df_total[, 10:16]), type = 'upper')
 
-## Modell mit total Spends
+
+## Modelle mit total Spends
 fviz_nbclust(m_total, kmeans, method = "wss")
 fviz_nbclust(m_total, kmeans, method = "silhouette")
 fviz_nbclust(m_total, kmeans, method = "gap_stat")
@@ -105,7 +111,7 @@ prop.table(t, 1)*100
 
 
 
-## Modell mit total Spends
+## Modelle mit Prozenten
 fviz_nbclust(m_prz, kmeans, method = "wss")
 fviz_nbclust(m_prz, kmeans, method = "silhouette")
 fviz_nbclust(m_prz, kmeans, method = "gap_stat")
