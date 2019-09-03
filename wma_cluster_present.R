@@ -88,6 +88,10 @@ m1 <- kmeans(m_total, centers = 2)
 m2 <- kmeans(m_total, centers = 3)
 m3 <- kmeans(m_total, centers = 4)
 
+fviz_cluster(m1, m_total)
+fviz_cluster(m2, m_total)
+fviz_cluster(m3, m_total)
+
 erg_total <- cbind(df_total, m1 = m1$cluster, m2 =m2$cluster, m3 =m3$cluster)
 erg_total <- left_join(erg_total, df[, c("Marke", "Gruppe", "Wirtschaftsbereich")])
 
@@ -98,3 +102,18 @@ t <- table( erg_total$Wirtschaftsbereich, erg_total$m2)
 prop.table(t, 1)*100
 t <- table( erg_total$Wirtschaftsbereich, erg_total$m3)
 prop.table(t, 1)*100
+
+
+
+## Modell mit total Spends
+fviz_nbclust(m_prz, kmeans, method = "wss")
+fviz_nbclust(m_prz, kmeans, method = "silhouette")
+fviz_nbclust(m_prz, kmeans, method = "gap_stat")
+
+m4 <- kmeans(m_prz, centers = 3)
+m5 <- kmeans(m_prz, centers = 6)
+m6 <- kmeans(m_prz, centers = 9)
+
+fviz_cluster(m4, m_prz)
+fviz_cluster(m5, m_prz)
+fviz_cluster(m6, m_prz)
