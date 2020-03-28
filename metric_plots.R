@@ -3,7 +3,8 @@ library(corrplot)
 source("exploration_funs.R")
 
 
-df <- iris
+#### All about categroial ####
+iplot_categorial(iris$Species)
 
 
 #### All about metrics  ####
@@ -31,5 +32,4 @@ corrplot(cor(df[1:4]), type = "upper") # metric only
 
 pairs(df)
 plot_ly(x = dx y = y, z= t, color= c, type = 'scatter3d', mode = 'markers') 
-
 
