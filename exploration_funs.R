@@ -24,7 +24,20 @@ iplot_categorial <- function(x) {
    return(summary(x))
 }
 
-
+iplot_categorial_categorial <- function(x, y) {
+   df <-  data.frame(table(x,y))
+   df2 <- data.frame(prop.table(table(x,y)))
+   df3 <- data.frame(prop.table(table(x,y), margin = 1))
+   p1 <- plot_ly(df, x=~x, y=~Freq, type="bar", color=~y) 
+   p2 <- plot_ly(df, x=~x, y=~Freq, type="bar", color=~y) %>%
+      layout(yaxis = list(title = 'Count'), barmode = 'stack')
+   p3 <- plot_ly(df2, x=~x, y=~Freq, type="bar", color=~y) 
+   p4 <- plot_ly(df3, x=~x, y=~Freq, type="bar", color=~y) %>%
+      layout(yaxis = list(title = 'Count'), barmode = 'stack')
+   subplot(p1, p3,  nrows = 2)
+   subplot(p2, p4, nrows = 2)
+}   
+   
 iplot_metric <- function(x) {
       l <- list()
       #Create Plots
