@@ -1,8 +1,13 @@
 library(plotly)
 library(dplyr)
 library(e1071)
+library(httr)
 
 
+calculate_mode <- function(x) {
+   uniqx <- unique(na.omit(x))
+   uniqx[which.max(tabulate(match(x, uniqx)))]
+}
 
 iplot_categorial <- function(x) {
    df <- data.frame(x = x, y = rep.int(1, length(x)))
@@ -10,18 +15,18 @@ iplot_categorial <- function(x) {
    #plots
    p1 <- plot_ly(df, x= ~x, y=~y, type = "bar")
    p2 <- plot_ly(df, labels = ~x, values = ~y, type = 'pie',
-           textposition = 'inside',
-           textinfo = 'label+percent',
-           insidetextfont = list(color = '#FFFFFF'),
-           hoverinfo = 'text',
-           text = ~y,
-           marker = list(colors = colors,
-                         line = list(color = '#FFFFFF', width = 1)),
-           #The 'pull' attribute can also be used to create space between the sectors
-           showlegend = FALSE)
+                 textposition = 'inside',
+                 textinfo = 'label+percent',
+                 insidetextfont = list(color = '#FFFFFF'),
+                 hoverinfo = 'text',
+                 text = ~y,
+                 marker = list(colors = colors,
+                               line = list(color = '#FFFFFF', width = 1)),
+                 #The 'pull' attribute can also be used to create space between the sectors
+                 showlegend = FALSE)
    print(p1)
    print(p2)
-   return(summary(x))
+   return(c(summary(x), mode=calculate_mode(x)))
 }
 
 iplot_categorial_categorial <- function(x, y) {
@@ -36,6 +41,10 @@ iplot_categorial_categorial <- function(x, y) {
       layout(yaxis = list(title = 'Count'), barmode = 'stack')
    subplot(p1, p3,  nrows = 2)
    subplot(p2, p4, nrows = 2)
+}   
+   
+iplot_categorial_metric <- {
+
 }   
    
 iplot_metric <- function(x) {
